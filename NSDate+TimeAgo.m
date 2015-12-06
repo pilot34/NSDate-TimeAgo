@@ -4,18 +4,11 @@
 -(NSString *)getLocaleFormatUnderscoresWithValue:(double)value;
 @end
 
-@interface DummyClass: NSObject
-@end
-
-@implementation DummyClass
-
-@end
-
 @implementation NSDate (TimeAgo)
 
 #ifndef NSDateTimeAgoLocalizedStrings
 #define NSDateTimeAgoLocalizedStrings(key) \
-NSLocalizedStringFromTableInBundle(key, @"NSDateTimeAgo", [NSBundle bundleWithPath:[[[NSBundle bundleForClass:[DummyClass class]] resourcePath] stringByAppendingPathComponent:@"NSDateTimeAgo.bundle"]], nil)
+NSLocalizedStringFromTableInBundle(key, @"NSDateTimeAgo", [NSBundle bundleWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"NSDateTimeAgo.bundle"]], nil)
 #endif
 
 // shows 1 or two letter abbreviation for units.
@@ -137,13 +130,13 @@ NSLocalizedStringFromTableInBundle(key, @"NSDateTimeAgo", [NSBundle bundleWithPa
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDate * now = [NSDate date];
     NSDateComponents *components = [calendar components:
-                                    NSCalendarUnitYear|
-                                    NSCalendarUnitMonth|
-                                    NSCalendarUnitWeekOfYear|
-                                    NSCalendarUnitDay|
-                                    NSCalendarUnitHour|
-                                    NSCalendarUnitMinute|
-                                    NSCalendarUnitSecond
+                                    NSYearCalendarUnit|
+                                    NSMonthCalendarUnit|
+                                    NSWeekCalendarUnit|
+                                    NSDayCalendarUnit|
+                                    NSHourCalendarUnit|
+                                    NSMinuteCalendarUnit|
+                                    NSSecondCalendarUnit
                                                fromDate:self
                                                  toDate:now
                                                 options:0];
@@ -164,13 +157,13 @@ NSLocalizedStringFromTableInBundle(key, @"NSDateTimeAgo", [NSBundle bundleWithPa
         }
         return [self stringFromFormat:@"%%d %@months ago" withValue:components.month];
     }
-    else if (components.weekOfYear >= 1)
+    else if (components.week >= 1)
     {
-        if (components.weekOfYear == 1)
+        if (components.week == 1)
         {
             return NSDateTimeAgoLocalizedStrings(@"1 week ago");
         }
-        return [self stringFromFormat:@"%%d %@weeks ago" withValue:components.weekOfYear];
+        return [self stringFromFormat:@"%%d %@weeks ago" withValue:components.week];
     }
     else if (components.day >= 1)    // up to 6 days ago
     {
@@ -212,25 +205,25 @@ NSLocalizedStringFromTableInBundle(key, @"NSDateTimeAgo", [NSBundle bundleWithPa
     NSDate * now = [NSDate date];
     NSCalendar *calendar = [NSCalendar currentCalendar];
     
-    NSDateComponents *components = [calendar components:NSCalendarUnitHour
+    NSDateComponents *components = [calendar components:NSHourCalendarUnit
                                                fromDate:self
                                                  toDate:now
                                                 options:0];
     
     if (components.hour >= 6) // if more than 6 hours ago, change precision
     {
-        NSInteger startDay = [calendar ordinalityOfUnit:NSCalendarUnitDay
-                                                 inUnit:NSCalendarUnitEra
+        NSInteger startDay = [calendar ordinalityOfUnit:NSDayCalendarUnit
+                                                 inUnit:NSEraCalendarUnit
                                                 forDate:self];
-        NSInteger endDay = [calendar ordinalityOfUnit:NSCalendarUnitDay
-                                               inUnit:NSCalendarUnitEra
+        NSInteger endDay = [calendar ordinalityOfUnit:NSDayCalendarUnit
+                                               inUnit:NSEraCalendarUnit
                                               forDate:now];
         
         NSInteger diffDays = endDay - startDay;
         if (diffDays == 0) // today!
         {
-            NSDateComponents * startHourComponent = [calendar components:NSCalendarUnitHour fromDate:self];
-            NSDateComponents * endHourComponent = [calendar components:NSCalendarUnitHour fromDate:self];
+            NSDateComponents * startHourComponent = [calendar components:NSHourCalendarUnit fromDate:self];
+            NSDateComponents * endHourComponent = [calendar components:NSHourCalendarUnit fromDate:self];
             if (startHourComponent.hour < 12 &&
                 endHourComponent.hour > 12)
             {
@@ -250,11 +243,11 @@ NSLocalizedStringFromTableInBundle(key, @"NSDateTimeAgo", [NSBundle bundleWithPa
         }
         else
         {
-            NSInteger startWeek = [calendar ordinalityOfUnit:NSCalendarUnitWeekOfYear
-                                                      inUnit:NSCalendarUnitEra
+            NSInteger startWeek = [calendar ordinalityOfUnit:NSWeekCalendarUnit
+                                                      inUnit:NSEraCalendarUnit
                                                      forDate:self];
-            NSInteger endWeek = [calendar ordinalityOfUnit:NSCalendarUnitWeekOfYear
-                                                    inUnit:NSCalendarUnitEra
+            NSInteger endWeek = [calendar ordinalityOfUnit:NSWeekCalendarUnit
+                                                    inUnit:NSEraCalendarUnit
                                                    forDate:now];
             NSInteger diffWeeks = endWeek - startWeek;
             if (diffWeeks == 0)
@@ -267,11 +260,11 @@ NSLocalizedStringFromTableInBundle(key, @"NSDateTimeAgo", [NSBundle bundleWithPa
             }
             else
             {
-                NSInteger startMonth = [calendar ordinalityOfUnit:NSCalendarUnitMonth
-                                                           inUnit:NSCalendarUnitEra
+                NSInteger startMonth = [calendar ordinalityOfUnit:NSMonthCalendarUnit
+                                                           inUnit:NSEraCalendarUnit
                                                           forDate:self];
-                NSInteger endMonth = [calendar ordinalityOfUnit:NSCalendarUnitMonth
-                                                         inUnit:NSCalendarUnitEra
+                NSInteger endMonth = [calendar ordinalityOfUnit:NSMonthCalendarUnit
+                                                         inUnit:NSEraCalendarUnit
                                                         forDate:now];
                 NSInteger diffMonths = endMonth - startMonth;
                 if (diffMonths == 0)
@@ -284,11 +277,11 @@ NSLocalizedStringFromTableInBundle(key, @"NSDateTimeAgo", [NSBundle bundleWithPa
                 }
                 else
                 {
-                    NSInteger startYear = [calendar ordinalityOfUnit:NSCalendarUnitYear
-                                                              inUnit:NSCalendarUnitEra
+                    NSInteger startYear = [calendar ordinalityOfUnit:NSYearCalendarUnit
+                                                              inUnit:NSEraCalendarUnit
                                                              forDate:self];
-                    NSInteger endYear = [calendar ordinalityOfUnit:NSCalendarUnitYear
-                                                            inUnit:NSCalendarUnitEra
+                    NSInteger endYear = [calendar ordinalityOfUnit:NSYearCalendarUnit
+                                                            inUnit:NSEraCalendarUnit
                                                            forDate:now];
                     NSInteger diffYears = endYear - startYear;
                     if (diffYears == 0)
@@ -360,10 +353,17 @@ NSLocalizedStringFromTableInBundle(key, @"NSDateTimeAgo", [NSBundle bundleWithPa
  */
 -(NSString *)getLocaleFormatUnderscoresWithValue:(double)value
 {
-    NSString *localeCode = [[NSLocale preferredLanguages] objectAtIndex:0];
+    static NSString *__localeCode = nil;
+    if (!__localeCode) {
+        __localeCode = [[NSLocale preferredLanguages] objectAtIndex:0];
+        if (__localeCode.length >= 2) {
+            __localeCode = [__localeCode substringWithRange:NSMakeRange(0, 2)];
+        }
+    }
     
     // Russian (ru)
-    if([localeCode isEqual:@"ru"]) {
+    if ([__localeCode isEqual:@"ru"]
+        || [__localeCode isEqual:@"uk"]) {
         int XY = (int)floor(value) % 100;
         int Y = (int)floor(value) % 10;
         
