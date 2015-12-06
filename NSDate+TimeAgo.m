@@ -352,18 +352,9 @@ NSLocalizedStringFromTableInBundle(key, @"NSDateTimeAgo", [NSBundle bundleWithPa
  and return set of underscores ("_") as it is an ID for locale format. No underscore ("") means default locale format;
  */
 -(NSString *)getLocaleFormatUnderscoresWithValue:(double)value
-{
-    static NSString *__localeCode = nil;
-    if (!__localeCode) {
-        __localeCode = [[NSLocale preferredLanguages] objectAtIndex:0];
-        if (__localeCode.length >= 2) {
-            __localeCode = [__localeCode substringWithRange:NSMakeRange(0, 2)];
-        }
-    }
-    
+{    
     // Russian (ru)
-    if ([__localeCode isEqual:@"ru"]
-        || [__localeCode isEqual:@"uk"]) {
+    if (YES) {
         int XY = (int)floor(value) % 100;
         int Y = (int)floor(value) % 10;
         
